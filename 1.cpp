@@ -186,8 +186,38 @@ long double HuiGuiJiSuan(double a[], int k, int n)//Ê¹ÓÃn¸öÊı¾İ×éÉ¸³ıÒì³£Êı¾İºóÏ
 		return HuiGuiJiSuan(KPlusOne, 4, 5);
 	}
 }
+//ÎÒ¸öÈËÈÏÎª£¬ÎÒÃÇ¿ÉÄÜĞèÒªÁ½ÊÖ×¼±¸£¬Ê±¿Ì×¼±¸ºÃÍòÒ»¸ÉÈÅ¹ı¶àµ¼ÖÂÎÒÃÇ¼ÆËãµÄ±£ÊØÖµÇø¼ä±»¹ı¶àµÄ¸ÉÈÅÊı¾İÓ°Ïìµ¼ÖÂ´óÅÌÉÏÒÆ£¬´ËÊ±Ê±¿Ì×¼±¸ºÃÉÏÏß±¸ÓÃPointCentreº¯Êı¸ÄÓÃÊÖ¶¯Êä³öÖĞÖµ½øĞĞÅĞ¶Ï¡£
 
 
+
+//Ëæ»úÊıº¯Êıµ½Ê±ºòÓÉ×îÖÕµÄÓïÑÔÑ¡ÔñÀ´½øĞĞ¾ö¶¨
+//def SuiJiShuHanShu ()
+//import random
+//return random
+
+double GanRaoJiLv(double a[], int k, long double PointCentreKPlusOne, double m)
+{
+	if (a[k] <= (PointCentreKPlusOne - m * 0.6667))
+	{
+		return 1;
+	}//µÍÓÚÒ»¸ö×îµÍãĞÖµÒ»¶¨Òª³¢ÊÔ½øĞĞ¸ÉÈÅ£»
+	else if (a[k] <= (PointCentreKPlusOne + m * 0.3333))
+	{
+		return (PointCentreKPlusOne + m * 0.3333 - a[k]) / m;
+	}//ÔÚ±£ÊØÖµÇø¼ä£¬¿É¸ù¾İÊµÊ±ÖµµÄ´óĞ¡À´½øĞĞ¸ÉÈÅ£¬ÊµÊ±ÖµÔ½Ğ¡£¬¾ö¶¨ÏÂÒ»ÂÖ½øĞĞ¸ÉÈÅµÄ¼¸ÂÊÔ½´ó¡£
+	else if (a[k] < (PointCentreKPlusOne + 1.8 * m))
+	{
+		return 0;
+	}
+	else if (a[k] > PointCentreKPlusOne + t * m)
+	{
+		return 0;
+	}
+	else
+	{
+		return 
+	}
+}
 
 
 
