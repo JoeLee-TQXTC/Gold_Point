@@ -6,11 +6,11 @@
 #include<cstdio>
 #include<iomanip>
 #include<math.h>
-
+double m = 0;//m计算标准差；
 long double HuiGuiJiSuan(double a[], int k, int n)//使用n个数据组筛除异常数据后线性回归预测下一个值中点。
 {
 	double w = 0, b = 0,  nx = 0;//设线性回归方程为y=wx+b,nx为有效数据组数
-	double sum = 0, SUMx_y = 0, SUMx2 = 0, SUMx = 0, SUMy = 0, aver = 0, m = 0, x = 0;/*sum为所有黄金点之和，aver为所有黄金点平均值，SUMx_y为xi*yi累积, SUMx2为xi^2累积, SUMx为xi累积, SUMy为yi累积,m计算标准差。*/
+	double sum = 0, SUMx_y = 0, SUMx2 = 0, SUMx = 0, SUMy = 0, aver = 0, x = 0;/*sum为所有黄金点之和，aver为所有黄金点平均值，SUMx_y为xi*yi累积, SUMx2为xi^2累积, SUMx为xi累积, SUMy为yi累积,m计算标准差。*/
 	for (int i = k+1-n; i <= k; ++i)//计算黄金点数据的总和
 	{
 		sum += a[i];
@@ -199,25 +199,55 @@ double GanRaoJiLv(double a[], int k, long double PointCentreKPlusOne, double m)
 {
 	if (a[k] <= (PointCentreKPlusOne - m * 0.6667))
 	{
-		return 1;
+		return 0.9;
 	}//低于一个最低阈值一定要尝试进行干扰；
 	else if (a[k] <= (PointCentreKPlusOne + m * 0.3333))
 	{
-		return (PointCentreKPlusOne + m * 0.3333 - a[k]) / m;
+		return (PointCentreKPlusOne + m * 0.3333 - a[k])*0.9 / m;
 	}//在保守值区间，可根据实时值的大小来进行干扰，实时值越小，决定下一轮进行干扰的几率越大。
 	else if (a[k] < (PointCentreKPlusOne + 1.8 * m))
 	{
 		return 0;
 	}
-	else if (a[k] > PointCentreKPlusOne + t * m)
+	else if (a[k] > PointCentreKPlusOne + t * m)//识别被干扰后黄金点
 	{
-		return 0;
+		if (a[k - 1] > PointCentreKPlusOne + t * m)//如果已经被干扰两次（采取谨慎策略，由于不可超过三个干扰点）
+		{
+			if (a[k] < PointCentreKPlusOne + T * m)//如果干扰程度不严重，黄金点离HighestLine有一定距离，可以考虑接一段干扰
+			{
+				return 0.5;
+			}
+			else//干扰点过高则放弃干扰
+			{
+				return 0;
+			}
+		}
+		else//一次干扰考虑进行追加二次干扰
+		{
+			return 0.73;
+		}
 	}
 	else
 	{
-		return 
+		return 0；
 	}
 }
+
+double X1, X2;//X1,X2为我们最终提交的数据，其中X1只做预测，不做干扰，X2偶尔预测，作用是进行干扰；
+int main()
+{
+	long double n = PointCentre(a[k], k);
+	double k = GanRaoJiLv(a[k], k, n, m);
+
+	t = random(1，0);//生成1~0之间的随机数，具体语句取决于最终选用的语言；
+
+	if (t <= k)
+	{
+		X2 = 99;
+		X1=
+	}
+}
+
 
 
 
