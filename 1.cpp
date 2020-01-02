@@ -16,14 +16,14 @@ long double HuiGuiJiSuan(double a[], int k, int n)//Ê¹ÓÃn¸öÊı¾İ×éÉ¸³ıÒì³£Êı¾İºóÏ
 		sum += a[i];
 	}
 	aver = sum / n;//¼ÆËã»Æ½ğµãÆ½¾ùÖµ
-	for (int i = k - 9; i <= k; ++i)
+	for (int i = k+1-n; i <= k; ++i)
 	{
 		x = a[i] - aver;
 		x *= x;
 		m += x;
 	}
 	m = sqrt(m / n);//µÃµ½»Æ½ğµãÊı¾İµÄ±ê×¼²î
-	for (int i = k - 9; i <= k; ++i)
+	for (int i = k+1-n; i <= k; ++i)
 	{
 		if ((aver - m) <= a[i] && a[i] <= (aver + m))//É¸Ñ¡ÓĞĞ§Êı¾İ
 		{
