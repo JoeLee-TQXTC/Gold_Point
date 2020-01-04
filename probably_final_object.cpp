@@ -7,6 +7,7 @@
 #include<cstdlib>
 #include<iomanip>
 #include<math.h>
+double m = 0;//m计算标准差；
 int i = 0;
 long double t;
 long double T1 = 0.8, T2 = 1.5;//T1和T2最好做成能我到时候能紧急手动输入的。。。。hhhh怕情况有变23333
@@ -284,15 +285,22 @@ int main()
 {
 	srand((unsigned)time(NULL));
 	long double n = PointCentre(a, k);
-	double k = GanRaoJiLv(a[k], k, n, m);
+	double k0 = GanRaoJiLv(a, k, n, m);
 	bool GanRao = 0;
 	long double Tt = rand() / double(RAND_MAX);//生成1~0之间的随机数，具体语句取决于最终选用的语言；
 	Setting_w();
-	if (Tt <= k)
+	if (Tt <= k0)
 	{
 		GanRao = 1;
 		X2 = 99;
-		X1 = a[k]*w;
+		if ((n*0.7*w <= a[k]) && (n*1.5*w >= a[k]))
+		{
+			X1 = a[k] * sqrt(w);
+		}
+		else
+		{
+			X1 = a[k]*w;
+		}
 	}
 	else
 	{
