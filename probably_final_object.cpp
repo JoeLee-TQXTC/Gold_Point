@@ -11,7 +11,7 @@ double m = 0;//m计算标准差；
 int i = 0;
 long double t;
 long double T1 = 0.8, T2 = 1.5;//T1和T2最好做成能我到时候能紧急手动输入的。。。。hhhh怕情况有变23333
-long double HuiGuiJiSuan(double a[], int k, int n)//使用n个数据组筛除异常数据后线性回归预测下一个值中点。
+inline long double HuiGuiJiSuan(double a[], int k, int n)//使用n个数据组筛除异常数据后线性回归预测下一个值中点。
 {
 	double w = 0, b = 0,  nx = 0;//设线性回归方程为y=wx+b,nx为有效数据组数
 	double sum = 0, SUMx_y = 0, SUMx2 = 0, SUMx = 0, SUMy = 0, aver = 0, m = 0, x = 0;/*sum为所有黄金点之和，aver为所有黄金点平均值，SUMx_y为xi*yi累积, SUMx2为xi^2累积, SUMx为xi累积, SUMy为yi累积,m计算标准差。*/
