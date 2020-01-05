@@ -236,7 +236,7 @@ double GanRaoJiLv(double a[], int k, long double PointCentreKPlusOne, double m)
 	}
 }
 
-
+double w=0;
 double W[2000];//记录干扰点与上一点的比例
 void Setting_w(double a[], int k)
 {
