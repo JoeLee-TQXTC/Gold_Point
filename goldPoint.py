@@ -2,6 +2,8 @@ import math
 import random
 import time
 import argparse
+import base64
+import hashlib
 from pyswagger import App
 from pyswagger.contrib.client.requests import Client
 
@@ -43,7 +45,7 @@ class goldPoint:
 				SUMx2 += (i * i)
 				SUMx += i
 				SUMy += a[i]
-				++nx
+				nx += 1
 		w = (SUMx_y - SUMx * SUMy / nx) / (SUMx2 - SUMx * SUMx / nx)
 		b = SUMy / nx - w * SUMx / nx
 		return (k + 1) * w + b
@@ -74,21 +76,22 @@ class goldPoint:
 		# calculate
 		if (k == 0):
 			return a[0] * 0.6
-		else if (k == 1):
+		elif (k == 1):
 			t1 = a[0] - a[1]
 			t1 *= 0.5
 			return a[1] - t1
-		else if (k <= 3):
+		elif (k <= 3):
 			t1 = a[k - 2] - a[k - 1]
 			t1 *= 0.5
 			t2 = a[k - 1] - a[k]
 			b = t2 / t1
 			c = b * b
 			return a[k] * c * t2
-		else if (k <= 30):
+		elif (k <= 30):
 			for i in range(4, k + 1):
 				sum += a[i]
-				++n
+				n += 1
+			print(k, n)
 			aver = sum / n
 			for i in range(4, k + 1):
 				x = a[i] - aver
@@ -101,7 +104,7 @@ class goldPoint:
 					SUMx2 += (i * i)
 					SUMx += i
 					SUMy += a[i]
-					++nx
+					nx += 1
 			w = (SUMx_y - SUMx * SUMy / nx) / (SUMx2 - SUMx * SUMx / nx)
 			b = SUMy / nx - w * SUMx / nx
 			return (w * (k + 1) + b)
@@ -117,11 +120,11 @@ class goldPoint:
 	def GanRaoJiLv(self, a, k, PointCentreKPlusOne, m):
 		if (a[k] <= (PointCentreKPlusOne - m * 0.6667)):
 			return 0.9
-		else if (a[k] <= (PointCentreKPlusOne + m * 0.3333)):
+		elif (a[k] <= (PointCentreKPlusOne + m * 0.3333)):
 			return (PointCentreKPlusOne + m * 0.3333 - a[k]) * 0.9 / m
-		else if (a[k] < (PointCentreKPlusOne + 1.8 * m)):
+		elif (a[k] < (PointCentreKPlusOne + 1.8 * m)):
 			return 0
-		else if (a[k] > PointCentreKPlusOne +T1 * m):
+		elif (a[k] > PointCentreKPlusOne +T1 * m):
 			if (a[k - 1] > PointCentreKPlusOne + T1 * m):
 				if (a[k] < PointCentreKPlusOne + T2 * m):
 					return 0.5
@@ -152,6 +155,7 @@ class goldPoint:
 			n = 0.8 * k
 		else:
 			n = 40
+		n = math.floor(n)
 		for i in range(k + 1 - n, k + 1):
 			sum += a[i]
 		aver = sum / n
@@ -164,22 +168,28 @@ class goldPoint:
 			if (a[k - i] >= sum + 0.8 * m0):
 				self.W[num] = double(a[k - i] / a[k - i - 1])
 				doubleSum += self.W[num] * self.W[num]
-				++num
+				num += 1
 				w += self.W[num] * self.W[num] * self.W[num]
 				w /= doubleSUM
 		return
 
 	def predict(self, a):
-		k = a.len() - 1
+		a = list(a)
+		# print(a)
+		# print(a[0])
+		k = len(a) - 1
 		n = self.PointCentre(a, k)
-		k = self.GanRaoJiLv(a, k, n, self.m)		# ?
+		k0 = self.GanRaoJiLv(a, k, n, self.m)		# ?
 		GanRao = 0
 		Tt = random.random()
-		self.Setting_w()
-		if (Tt <= k):
+		self.Setting_w(a, k)
+		if (Tt <= k0):
 			GanRao = 1
 			self.X2 = 99
-			self.X1 = a[k] * w
+			if ((n * 0.7 * w <= a[k])) and ((n * 1.5 * w >= a[k])):
+				X1 = a[k] * math.sqrt(w)
+			else:
+				X1 = a[k] * w
 		else:
 			GanRao = 0
 			self.X1 = n * 0.9
@@ -215,7 +225,7 @@ def main():
 	try:
 		# 使用已存在的玩家
 		with open(userInfoFile) as f:
-			userId, nickName = f.read().split(',')[:2]
+			nickName, userId, key = f.read().split(',')[:3]
 		print('Use an exist player: ' + nickName + '  Id: ' + userId)
 	except:
 		# 创建一个新的玩家
@@ -295,6 +305,8 @@ def main():
 		print('Last round score: {}'.format(lastScore))
 
 		number1, number2 = gp.predict(todayGoldenList.goldenNumberList)
+		# number1, number2 = random.random(), random.random()
+		print(number1, number2)
 
 		if (state.numbers == 2):
 			submitRsp = client.request(
@@ -302,7 +314,8 @@ def main():
 					uid=userId,
 					rid=state.roundId,
 					n1=str(number1),
-					n2=str(number2)
+					n2=str(number2),
+					token=base64.b64encode(hashlib.sha256((userId + state.roundId + key).encode(encoding='utf-8')).hexdigest().encode(encoding='utf-8'))
 				))
 			if submitRsp.status == 200:
 				print('You submit numbers: ' + str(number1) + ', ' + str(number2))
@@ -315,7 +328,8 @@ def main():
 				app.op['Submit'](
 					uid=userId,
 					rid=state.roundId,
-					n1=str(number1)
+					n1=str(number1),
+					token=base64.b64encode(hashlib.sha256((userId + state.roundId + key).encode(encoding='utf-8')).hexdigest().encode(encoding='utf-8'))
 				))
 			if submitRsp.status == 200:
 				print('You submit number: ' + str(number1))
